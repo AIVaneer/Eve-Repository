@@ -1,0 +1,52 @@
+import ui
+
+def make_dashboard_view():
+    view = ui.View(name='PCVR Mining Dashboard', bg_color='black')
+
+    title = ui.Label(frame=(10, 10, 360, 40))
+    title.text = 'PCVR Mining Dashboard'
+    title.font = ('<System-Bold>', 24)
+    title.text_color = 'white'
+    title.alignment = ui.ALIGN_CENTER
+    view.add_subview(title)
+
+    # Global Stats Button
+    btn_stats = ui.Button(title='Global Stats')
+    btn_stats.frame = (20, 70, 160, 50)
+    btn_stats.background_color = '#333'
+    btn_stats.tint_color = 'white'
+    view.add_subview(btn_stats)
+
+    # Wallet Info Button
+    btn_wallet = ui.Button(title='Wallet Info')
+    btn_wallet.frame = (200, 70, 160, 50)
+    btn_wallet.background_color = '#444'
+    btn_wallet.tint_color = 'white'
+    view.add_subview(btn_wallet)
+
+    # Active Orders Button
+    btn_orders = ui.Button(title='Active Orders')
+    btn_orders.frame = (20, 140, 160, 50)
+    btn_orders.background_color = '#555'
+    btn_orders.tint_color = 'white'
+    view.add_subview(btn_orders)
+
+    # Pools Button
+    btn_pools = ui.Button(title='My Pools')
+    btn_pools.frame = (200, 140, 160, 50)
+    btn_pools.background_color = '#666'
+    btn_pools.tint_color = 'white'
+    view.add_subview(btn_pools)
+
+    # Console Output Area
+    console = ui.TextView(frame=(20, 210, 360, 260))
+    console.editable = False
+    console.font = ('Menlo', 12)
+    console.text_color = 'lime'
+    console.background_color = '#111'
+    view.add_subview(console)
+
+    return view
+
+dashboard = make_dashboard_view()
+dashboard.present('sheet')
