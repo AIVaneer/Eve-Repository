@@ -1,7 +1,4 @@
 ## Support
 
-For support, please visit the following links:
-
-- [GitHub Issues](https://github.com/AIVaneer/Eve-Repository/issues)
-- [Discussion Forum](https://github.com/AIVaneer/Eve-Repository/discussions)
-- [Contact Us](mailto:support@aivaneer.com)
+- Twitter: [X account](https://x.com/pcvr2024?s=21)
+- Discord: [Join our Discord](https://discord.gg/E7bW3Zh4x)
