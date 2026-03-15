@@ -1,16 +1,7 @@
-# README
+## Support
 
-## Overview
-This section provides an overview of the project.
+For support, please visit the following links:
 
-## Getting Started
-Instructions to get the project up and running.
-
-## Contributing
-Guidelines for contributing to the project.
-
-## Visuals
-Links to visuals related to the project.
-
-## License
-Details about the project's license.
+- [GitHub Issues](https://github.com/AIVaneer/Eve-Repository/issues)
+- [Discussion Forum](https://github.com/AIVaneer/Eve-Repository/discussions)
+- [Contact Us](mailto:support@aivaneer.com)
