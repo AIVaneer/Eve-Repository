@@ -1,4 +1,16 @@
-## WARP PROTOCOL – Pythonista Game
+# README
 
-Turn your iOS device into a portable gaming setup powered by Pythonista. Access the game script and join the conversation via Discord:
-[Discord Link](https://discord.com/channels/1316937801995911198/1316937802948280335/1482601103249117245).
+## Overview
+This section provides an overview of the project.
+
+## Getting Started
+Instructions to get the project up and running.
+
+## Contributing
+Guidelines for contributing to the project.
+
+## Visuals
+Links to visuals related to the project.
+
+## License
+Details about the project's license.
