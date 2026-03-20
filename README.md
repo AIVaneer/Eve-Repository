@@ -9,7 +9,8 @@
 | # | Game | Platform | Description | Repository |
 |---|---|---|---|---|
 | 1 | 🚀 **SkyBurner Ultimate** | Pythonista 3 / iOS | Vertical-scrolling arcade space-shooter powered by the Atlas Nexus Engine. Vector-art visuals, 4 weapon tiers, multi-phase bosses, combo system & more. | [View Repo](https://github.com/AIVaneer/SkyBurner-Ultimate-pythonista-game-) |
-| 2 | 🎮 **PCVR Game Shell** | Oculus Quest 3 | Foundational 2D VR game framework with core environment and character positioning. Open-source under MIT License. | [View Repo](https://github.com/AIVaneer/PCVR-game-shell-) |
+| 2 | 🌀 **Warp Protocol** | Pythonista 3 / iOS | Fast-paced arcade shooter with cinematic intro, dynamic starfield, enemy archetypes (standard, seeker, bomber), power-ups, bull-mode triple fire, and progressive difficulty scaling. | [View Repo](https://github.com/AIVaneer/Eve-Repository) |
+| 3 | 🎮 **PCVR Game Shell** | Oculus Quest 3 | Foundational 2D VR game framework with core environment and character positioning. Open-source under MIT License. | [View Repo](https://github.com/AIVaneer/PCVR-game-shell-) |
 
 ---
 
@@ -21,6 +22,13 @@
 |---|---|
 | **🎮 Game Download** | [Download SkyBurner Ultimate](https://discord.com/channels/1316937801995911198/1484003872178573495/1484552464639332605) |
 | **🎵 Music Download** | [Download Game Music](https://discord.com/channels/1316937801995911198/1484003872178573495/1484595490828845229) |
+
+### 🌀 Warp Protocol
+
+| Download | Link |
+|---|---|
+| **🎮 Game Download** | [Download Warp Protocol](https://discord.com/channels/1316937801995911198/1484003872178573495/1484175284419690687) |
+| **🎵 Music Download** | [Download Warp Protocol Music](https://discord.com/channels/1316937801995911198/1484003872178573495/1484175284419690687) |
 
 ---
 
