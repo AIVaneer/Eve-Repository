@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PCVR Studios — creators of SkyBurner Ultimate, a 100% Python arcade space-shooter, and other immersive games for iOS and beyond." />
+  <meta name="keywords" content="PCVR, PCVR Studios, SkyBurner Ultimate, games, Python, arcade shooter, Pythonista, iOS, mining, dashboard" />
+  <meta name="author" content="AIVaneer" />
+  <title>pcvr.lol — PCVR Studios</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #161b25;
+      --surface2:  #1e2535;
+      --accent:    #5b8dee;
+      --accent2:   #3ecf8e;
+      --text:      #e2e8f0;
+      --muted:     #8892a4;
+      --border:    #2a3347;
+      --radius:    8px;
+      --nav-h:     64px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color .2s; }
+    a:hover { color: var(--accent2); }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: rgba(13, 15, 20, .92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .nav-brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      color: var(--text);
+    }
+
+    .nav-brand span { color: var(--accent); }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.75rem;
+    }
+
+    .nav-links a {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: .25rem 0;
+      border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      border: none !important;
+      padding: .45rem 1.1rem !important;
+      border-radius: var(--radius) !important;
+      transition: background .2s !important;
+    }
+
+    .nav-cta:hover { background: var(--accent2) !important; color: #fff !important; }
+
+    /* ── Hero ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(91,141,238,.18) 0%, transparent 70%),
+        var(--bg);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(91,141,238,.15);
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(91,141,238,.3);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      max-width: 680px;
+      margin-bottom: 1.1rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: .7rem 1.8rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: transform .15s, opacity .2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); opacity: .9; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-success {
+      background: var(--accent2);
+      color: #0d0f14;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Section shared ── */
+    .section-title {
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
+    }
+
+    /* ── Games section ── */
+    .games {
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .game-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .game-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .game-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .game-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .game-card-title h3 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: .3rem;
+    }
+
+    .game-card-title h3 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .game-badge {
+      display: inline-block;
+      background: rgba(62,207,142,.15);
+      color: var(--accent2);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(62,207,142,.3);
+    }
+
+    .game-description {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      line-height: 1.7;
+    }
+
+    .game-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .game-feature {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .85rem 1rem;
+    }
+
+    .game-feature strong {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .game-feature span {
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .game-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .game-repo-link {
+      font-size: .875rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .game-repo-link:hover { color: var(--accent); }
+
+    /* ── Feature cards ── */
+    .features {
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: .85rem;
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: .4rem;
+    }
+
+    .card p {
+      font-size: .875rem;
+      color: var(--muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .footer-brand p {
+      color: var(--muted);
+      font-size: .875rem;
+      margin-top: .5rem;
+      max-width: 300px;
+    }
+
+    .footer-col h4 {
+      font-size: .85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .footer-col ul li a {
+      font-size: .875rem;
+      color: var(--muted);
+    }
+
+    .footer-col ul li a:hover { color: var(--text); }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 2rem auto 0;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .footer-bottom p { font-size: .8rem; color: var(--muted); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .footer-inner {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { gap: 1.1rem; }
+
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 0 1rem; }
+
+      .nav-links { display: none; }
+
+      .footer-inner { grid-template-columns: 1fr; }
+
+      .game-repo-link { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <span class="nav-brand">pcvr<span>.</span>lol</span>
+    <ul class="nav-links">
+      <li><a href="#games">Games</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#pools">Pools</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <header class="hero" id="home">
+    <span class="hero-badge">&#9889; PCVR Studios</span>
+    <h1>Welcome to <em>pcvr.lol</em></h1>
+    <p>Your hub for PCVR Studios games, real-time mining stats, wallet management, active orders, and pool oversight.</p>
+    <div class="hero-actions">
+      <a href="#games" class="btn btn-primary">Explore Games</a>
+      <a href="#features" class="btn btn-outline">Learn More</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Games ── -->
+    <section class="games" id="games">
+      <h2 class="section-title">&#127918; Our Games</h2>
+      <p class="section-sub">Built entirely in Python — immersive arcade experiences on iOS and beyond.</p>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <div class="game-icon">&#128640;</div>
+          <div class="game-card-title">
+            <h3><em>SkyBurner Ultimate</em></h3>
+            <span class="game-badge">&#128013; 100% Python</span>
+          </div>
+        </div>
+
+        <p class="game-description">
+          A high-octane, vertical-scrolling arcade space-shooter built <strong>entirely in Python</strong> — no external assets required.
+          Developed by <strong>PCVR Studios</strong> and powered by the custom <strong>Atlas Nexus Engine</strong>, the game runs on
+          <strong>Pythonista 3</strong> for iPhone and iPad, delivering stunning vector-art visuals at full frame-rate on any modern iOS device.
+          Three clean Python files (<code>atlas_nexus.py</code>, <code>entities.py</code>, <code>skyburner.py</code>) power the entire experience —
+          every sprite, explosion, and star is drawn with Python's built-in modules.
+        </p>
+
+        <div class="game-features-grid">
+          <div class="game-feature">
+            <strong>&#128299; 4 Weapon Tiers</strong>
+            <span>Single laser → Dual cannon → Triple spread → Homing missiles</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#128126; 3 Enemy Types</strong>
+            <span>Fighter, Cruiser &amp; Boss (every 5th wave)</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#128165; Multi-Phase Bosses</strong>
+            <span>Entry → Attack 1 → Attack 2 → Rage mode</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#9889; Combo System</strong>
+            <span>Chain kills to build streaks up to <strong>&times;8</strong> multiplier</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#128737; Power-Ups</strong>
+            <span>Weapon upgrade, shield boost, health pack, extra bomb, speed burst</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#127756; 115-Star Starfield</strong>
+            <span>Gorgeous parallax scrolling space backdrop</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#128202; Full HUD</strong>
+            <span>Score, high-score, health, shield, lives, bombs, wave &amp; boss health</span>
+          </div>
+          <div class="game-feature">
+            <strong>&#128084; Touch Controls</strong>
+            <span>Drag to move, tap to bomb — auto-fire lets you focus on dodging</span>
+          </div>
+        </div>
+
+        <div class="game-actions">
+          <a href="https://discord.com/channels/1316937801995911198/1484003872178573495/1484552464639332605"
+             class="btn btn-primary" target="_blank" rel="noopener noreferrer"
+             title="Requires Discord membership — join our server to download">
+            &#127918; Download Game (Discord)
+          </a>
+          <a href="https://discord.com/channels/1316937801995911198/1484003872178573495/1484595490828845229"
+             class="btn btn-success" target="_blank" rel="noopener noreferrer"
+             title="Requires Discord membership — join our server to download">
+            &#127925; Download Music (Discord)
+          </a>
+          <a href="https://github.com/AIVaneer/SkyBurner-Ultimate-pythonista-game-"
+             class="game-repo-link" target="_blank" rel="noopener noreferrer">
+            &#128279; View on GitHub &rarr;
+          </a>
+        </div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:.75rem;">
+          &#128172; Downloads are hosted on our <a href="https://discord.gg/E7bW3Zh4x" target="_blank" rel="noopener noreferrer">Discord server</a> — join free to access them.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── Features ── -->
+    <section class="features" id="features">
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-sub">A unified platform to monitor and manage your PCVR mining operations.</p>
+      <div class="card-grid">
+
+        <article class="card">
+          <div class="card-icon">&#128202;</div>
+          <h3>Global Stats</h3>
+          <p>View live network-wide mining metrics and historical performance at a glance.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">&#128179;</div>
+          <h3>Wallet Info</h3>
+          <p>Track balances, transaction history, and earnings across all connected wallets.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">&#128221;</div>
+          <h3>Active Orders</h3>
+          <p>Monitor open orders, fulfillment status, and manage your trading queue in real time.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">&#127774;</div>
+          <h3>My Pools</h3>
+          <p>Oversee your mining pools, adjust settings, and review individual pool contributions.</p>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer id="contact">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <span class="nav-brand">pcvr<span>.</span>lol</span>
+        <p>PCVR Studios — creators of immersive Python-powered games and a modern PCVR mining dashboard.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#games">Games</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#pools">Pools</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Community</h4>
+        <ul>
+          <li><a href="https://discord.gg/E7bW3Zh4x" target="_blank" rel="noopener noreferrer">&#128172; Discord</a></li>
+          <li><a href="https://x.com/pcvr2024?s=21" target="_blank" rel="noopener noreferrer">&#128140; Twitter / X</a></li>
+          <li><a href="https://github.com/AIVaneer/Eve-Repository" target="_blank" rel="noopener noreferrer">&#128279; GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@pcvr.lol">contact@pcvr.lol</a></li>
+          <li><a href="#about">About Us</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 pcvr.lol &mdash; PCVR Studios. All rights reserved.</p>
+      <p>Built with &#10084;&#65039; by AIVaneer</p>
+    </div>
+  </footer>
+
+</body>
+</html>
