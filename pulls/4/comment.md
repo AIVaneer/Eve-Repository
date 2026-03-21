@@ -1,0 +1,1 @@
+Closing — PR #5 has been merged which already includes a more complete index.html with the SkyBurner Ultimate Games section, community links in the footer, updated nav, meta tags, and copyright → 2026. This PR is now superseded.
