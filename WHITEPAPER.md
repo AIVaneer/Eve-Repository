@@ -220,6 +220,8 @@ Roadmap Milestones
 • Add multiplayer mining pool functionality.
 • Optimize VR performance for the Oculus Quest.
 • Integrate in-game PCVR Coin reward payouts.
+• Current reward model: Direct developer-to-player payouts via wallet QR scan on the Cronos blockchain — no third parties.
+• Target reward model: Fully integrated in-app system where players earn and receive PCVR Coin automatically within a single app experience.
 
 6. Launch & Scaling (Not Started)
 • Release beta version to early adopters.
