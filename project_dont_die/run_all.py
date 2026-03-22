@@ -7,6 +7,7 @@ from vault import deposit_revenue, lock_tokens, report as vault_report
 from detector import check
 from atlas_graph_core import AtlasGraphCore
 import economy as e
+import store
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -50,3 +51,30 @@ print("=" * 50)
 atlas = AtlasGraphCore()
 print(" ", atlas.quick_economy_health())
 print(f"{'='*50}\n")
+
+# 7. Store — sample purchases (Spend Engine demo)
+print("=" * 50)
+print("  🏪 PCVR STORE — SPEND ENGINE DEMO")
+print("=" * 50)
+_demo_purchases = [
+    ("player_001", "Neon Blade Skin"),
+    ("player_002", "2x XP Boost (24h)"),
+    ("player_003", "Weekly Arena Entry"),
+    ("player_001", "Battle Pass — Season 1"),
+    ("player_004", "Galaxy Cape"),
+    ("player_005", "Reward Multiplier (7d)"),
+    ("player_002", "Qualifier Pass"),
+    ("player_006", "Genesis Founder Badge"),
+]
+for pid, item in _demo_purchases:
+    try:
+        tx = store.purchase(pid, item)
+        print(f"  ✅ {pid} bought '{tx['item']}' "
+              f"| {tx['price']} PCVR | burned {tx['burned']} 🔥 "
+              f"| vaulted {tx['vaulted']} 🔒")
+    except ValueError as ex:
+        print(f"  ❌ {ex}")
+
+print()
+store.print_revenue_report()
+store.print_category_breakdown()
