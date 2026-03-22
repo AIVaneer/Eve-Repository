@@ -5,6 +5,7 @@ from token_data import show as token_info
 from economy import earn, buy, lock, spend, burn, report as econ_report, new_day
 from vault import deposit_revenue, lock_tokens, report as vault_report
 from detector import check
+from atlas_graph_core import AtlasGraphCore
 import economy as e
 
 print("\n" + "=" * 50)
@@ -40,4 +41,12 @@ vault_report()
 check(e.emitted, e.spent, e.burned, e.locked, e.circ, e.supply, e.cap, e.today)
 
 print("© PCVR STUDIOS 2026")
+print(f"{'='*50}\n")
+
+# 6. Atlas Graph Core — quick economy health check
+print("=" * 50)
+print("  🧠 ATLAS GRAPH CORE v2 — Economy Health")
+print("=" * 50)
+atlas = AtlasGraphCore()
+print(" ", atlas.quick_economy_health())
 print(f"{'='*50}\n")
