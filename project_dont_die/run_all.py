@@ -7,6 +7,7 @@ from vault import deposit_revenue, lock_tokens, report as vault_report
 from detector import check
 from atlas_graph_core import AtlasGraphCore
 import economy as e
+import store
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -50,3 +51,18 @@ print("=" * 50)
 atlas = AtlasGraphCore()
 print(" ", atlas.quick_economy_health())
 print(f"{'='*50}\n")
+
+# 7. Store — Spend Engine demo
+store.save_catalog()
+print("=" * 50)
+print("  🏪 PCVR STORE — Spend Engine")
+print("=" * 50)
+store.purchase("alpha_1",    "Neon Ship Skin")
+store.purchase("alpha_2",    "2x XP Boost (24h)")
+store.purchase("og_holder",  "Battle Pass Season 1")
+store.purchase("player_x",   "Weekly Tournament Entry")
+store.purchase("player_y",   "Founders Ship Skin")
+store.purchase("alpha_1",    "Plasma Trail")
+store.purchase("new_recruit","2x XP Boost (24h)")
+store.print_revenue_report()
+store.print_category_breakdown()

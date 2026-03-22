@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 project_dont_die/atlas_graph.json
 project_dont_die/atlas_economy.json
+project_dont_die/store_catalog.json
+project_dont_die/store_transactions.json
