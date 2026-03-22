@@ -1,0 +1,494 @@
+{
+  "nodes": [
+    {
+      "id": "atlas_graph_core.py",
+      "type": "file"
+    },
+    {
+      "id": "atlas_graph_core.py:save_graph",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:load_graph",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:GraphBuilder",
+      "type": "class"
+    },
+    {
+      "id": "atlas_graph_core.py:EconomyGraphBuilder",
+      "type": "class"
+    },
+    {
+      "id": "atlas_graph_core.py:GraphAnalyzer",
+      "type": "class"
+    },
+    {
+      "id": "atlas_graph_core.py:AtlasGraphCore",
+      "type": "class"
+    },
+    {
+      "id": "atlas_graph_core.py:__init__",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:add_node",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:add_edge",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:scan_file",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:scan_folder",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:add_wallet",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:add_transaction",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:simulate_economy",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:find_orphans",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:find_heavy_dependencies",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:system_health",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:_code_health",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:_economy_health",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:build",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:build_economy",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:analyze",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:show_summary",
+      "type": "function"
+    },
+    {
+      "id": "atlas_graph_core.py:quick_economy_health",
+      "type": "function"
+    },
+    {
+      "id": "run_all.py",
+      "type": "file"
+    },
+    {
+      "id": "vault.py",
+      "type": "file"
+    },
+    {
+      "id": "vault.py:deposit_revenue",
+      "type": "function"
+    },
+    {
+      "id": "vault.py:lock_tokens",
+      "type": "function"
+    },
+    {
+      "id": "vault.py:advance_day",
+      "type": "function"
+    },
+    {
+      "id": "vault.py:check_unlocks",
+      "type": "function"
+    },
+    {
+      "id": "vault.py:vault_apy",
+      "type": "function"
+    },
+    {
+      "id": "vault.py:report",
+      "type": "function"
+    },
+    {
+      "id": "economy.py",
+      "type": "file"
+    },
+    {
+      "id": "economy.py:earn",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:spend",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:burn",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:lock",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:buy",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:health",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:burn_ratio",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:net",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:new_day",
+      "type": "function"
+    },
+    {
+      "id": "economy.py:report",
+      "type": "function"
+    },
+    {
+      "id": "token_data.py",
+      "type": "file"
+    },
+    {
+      "id": "token_data.py:show",
+      "type": "function"
+    },
+    {
+      "id": "detector.py",
+      "type": "file"
+    },
+    {
+      "id": "detector.py:check",
+      "type": "function"
+    }
+  ],
+  "edges": [
+    {
+      "source": "atlas_graph_core.py",
+      "target": "os",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "ast",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "json",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "random",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "datetime",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:save_graph",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:load_graph",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:GraphBuilder",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:EconomyGraphBuilder",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:GraphAnalyzer",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:AtlasGraphCore",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "economy",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "vault",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "detector",
+      "type": "imports"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:__init__",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:add_node",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:add_edge",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:scan_file",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:scan_folder",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:__init__",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:add_wallet",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:add_transaction",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:simulate_economy",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:__init__",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:find_orphans",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:find_heavy_dependencies",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:system_health",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:_code_health",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:_economy_health",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:__init__",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:build",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:build_economy",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:analyze",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:show_summary",
+      "type": "defines"
+    },
+    {
+      "source": "atlas_graph_core.py",
+      "target": "atlas_graph_core.py:quick_economy_health",
+      "type": "defines"
+    },
+    {
+      "source": "run_all.py",
+      "target": "token_data",
+      "type": "imports"
+    },
+    {
+      "source": "run_all.py",
+      "target": "economy",
+      "type": "imports"
+    },
+    {
+      "source": "run_all.py",
+      "target": "vault",
+      "type": "imports"
+    },
+    {
+      "source": "run_all.py",
+      "target": "detector",
+      "type": "imports"
+    },
+    {
+      "source": "run_all.py",
+      "target": "atlas_graph_core",
+      "type": "imports"
+    },
+    {
+      "source": "run_all.py",
+      "target": "economy",
+      "type": "imports"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:deposit_revenue",
+      "type": "defines"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:lock_tokens",
+      "type": "defines"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:advance_day",
+      "type": "defines"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:check_unlocks",
+      "type": "defines"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:vault_apy",
+      "type": "defines"
+    },
+    {
+      "source": "vault.py",
+      "target": "vault.py:report",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:earn",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:spend",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:burn",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:lock",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:buy",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:health",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:burn_ratio",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:net",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:new_day",
+      "type": "defines"
+    },
+    {
+      "source": "economy.py",
+      "target": "economy.py:report",
+      "type": "defines"
+    },
+    {
+      "source": "token_data.py",
+      "target": "token_data.py:show",
+      "type": "defines"
+    },
+    {
+      "source": "detector.py",
+      "target": "detector.py:check",
+      "type": "defines"
+    }
+  ],
+  "timestamp": "2026-03-22 15:36:59.757310"
+}
