@@ -260,3 +260,13 @@ if _SMART_INTEGRATIONS_AVAILABLE:
         print("  Sentiment data unavailable")
     print("  Run `smart_integrations.py` for full intelligence report")
     print(f"{'='*50}\n")
+
+# ── Dashboard hint ─────────────────────────────────────────────────────────
+print("=" * 50)
+print("  📊 V10 VISUAL DASHBOARD")
+print("=" * 50)
+print("  Run `dashboard.py` to launch the visual web dashboard")
+print("  → Real-time charts, risk gauges, whale activity,")
+print("    economy stats, and market data in any browser.")
+print("  → Or use the 'dashboard' command in atlas_omega.py")
+print(f"{'='*50}\n")
