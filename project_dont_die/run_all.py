@@ -11,6 +11,7 @@ import store
 import history
 import whale_tracker
 import scenario
+import alert
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -137,4 +138,20 @@ print(f"  Net emission  : {_bs['net_emission']:>14,.0f} PCVR")
 print(f"  Verdict       : {_bs['verdict']}")
 print()
 print("  Run `scenario.py` for full what-if simulations")
+print(f"{'='*50}\n")
+
+# 11. Alert health check & risk score
+print("=" * 50)
+print("  🚨 PCVR ALERT ENGINE — Health Check")
+print("=" * 50)
+alert.health_check()
+_score, _interp = alert.risk_score()
+print(f"\n  Risk Score: {_score}/100  {_interp}")
+_critical_alerts = alert.get_by_severity("critical")
+_danger_alerts   = alert.get_by_severity("danger")
+for _a in _critical_alerts + _danger_alerts:
+    _emoji = "🚨" if _a["severity"] == "critical" else "🔴"
+    print(f"  {_emoji}  [{_a['category']}] {_a['message']}")
+print()
+print("  Run `alert.py` for full alert dashboard")
 print(f"{'='*50}\n")
