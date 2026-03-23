@@ -1,5 +1,12 @@
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.bak
+*.swp
+.DS_Store
+
+# project_dont_die — economy & ledger data
 project_dont_die/atlas_graph.json
 project_dont_die/atlas_economy.json
 project_dont_die/store_catalog.json
@@ -12,20 +19,28 @@ project_dont_die/scenario_results/
 project_dont_die/pcvr_alerts.json
 project_dont_die/pcvr_market_data.json
 project_dont_die/pcvr_validation_report.json
+
 # github sync — never commit these
 project_dont_die/github_token.txt
 project_dont_die/pcvr_sync_log.json
-*.bak
+
+# omega reports
 project_dont_die/omega_reports/
+
 # smart integrations — never commit API keys or runtime cache
 project_dont_die/integration_keys.json
 project_dont_die/intelligence_cache.json
+
 # dashboard — runtime cache
 project_dont_die/dashboard_cache/
+
 # automation — never commit runtime logs or custom rules
 project_dont_die/automation_log.json
 project_dont_die/automation_rules_custom.json
+
 # multichain — never commit runtime config or cache
 project_dont_die/multichain_config.json
 project_dont_die/multichain_cache.json
+
+# root-level stray files
 atlas_economy.json
