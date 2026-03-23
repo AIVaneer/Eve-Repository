@@ -8,11 +8,15 @@ from detector import check
 from atlas_graph_core import AtlasGraphCore
 import economy as e
 import store
+import history
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
 print("  Token Economy Engine · March 2026")
 print("=" * 50)
+
+# 0. Hook economy functions to auto-log to the ledger
+history.hook_economy()
 
 # 1. Token info
 token_info()
@@ -72,9 +76,34 @@ for pid, item in _demo_purchases:
         print(f"  ✅ {pid} bought '{tx['item']}' "
               f"| {tx['price']} PCVR | burned {tx['burned']} 🔥 "
               f"| vaulted {tx['vaulted']} 🔒")
+        history.log_event("purchase", tx["price"],
+                          details=tx["item"], source=pid)
+        history.log_event("burn",     tx["burned"],
+                          details=f"store burn — {tx['item']}", source="store")
+        history.log_event("vault_deposit", tx["vaulted"],
+                          details=f"vault cut — {tx['item']}", source="store")
     except ValueError as ex:
         print(f"  ❌ {ex}")
 
 print()
 store.print_revenue_report()
 store.print_category_breakdown()
+
+# 8. Log vault locks
+history.log_event("lock", 5000,  details="alpha_1 90-day lock",   source="vault")
+history.log_event("lock", 8000,  details="alpha_2 90-day lock",   source="vault")
+history.log_event("lock", 15000, details="og_holder 90-day lock", source="vault")
+
+# 9. Ledger summary
+print("=" * 50)
+print("  📜 PCVR LEDGER — TODAY'S SUMMARY")
+print("=" * 50)
+today = history.daily_summary()
+print(f"  Date:         {today['date']}")
+print(f"  Earned:       {today['earned']:>10,.0f} PCVR")
+print(f"  Spent:        {today['spent']:>10,.0f} PCVR")
+print(f"  Burned:       {today['burned']:>10,.0f} PCVR 🔥")
+print(f"  Locked:       {today['locked']:>10,.0f} PCVR 🔒")
+print(f"  Transactions: {today['transactions']:>10}")
+print()
+history.report()
