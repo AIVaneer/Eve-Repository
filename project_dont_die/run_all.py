@@ -12,13 +12,33 @@ import history
 import whale_tracker
 import scenario
 import alert
+import live_data
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
 print("  Token Economy Engine · March 2026")
 print("=" * 50)
 
-# 0. Hook economy functions to auto-log to the ledger
+# 0a. Live market snapshot
+print("\n" + "=" * 50)
+print("  📡 PCVR LIVE MARKET SNAPSHOT")
+print("=" * 50)
+try:
+    _market = live_data.get_data(force_refresh=True)
+    if _market.get("source") == "live":
+        _mp  = _market.get("price_usd") or 0
+        _mch = _market.get("change_24h") or 0
+        _ms  = live_data.market_status()
+        print(f"  Price    : ${_mp:.10f}")
+        print(f"  24h Chg  : {_mch:+.2f}%")
+        print(f"  Status   : {_ms}")
+    else:
+        print("  Market data unavailable — running with defaults")
+except Exception:
+    print("  Market data unavailable — running with defaults")
+print(f"{'='*50}\n")
+
+# 0b. Hook economy functions to auto-log to the ledger
 history.hook_economy()
 
 # 1. Token info
