@@ -16,3 +16,4 @@ project_dont_die/pcvr_validation_report.json
 project_dont_die/github_token.txt
 project_dont_die/pcvr_sync_log.json
 *.bak
+project_dont_die/omega_reports/
