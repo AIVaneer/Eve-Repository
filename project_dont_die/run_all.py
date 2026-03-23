@@ -36,6 +36,11 @@ try:
     _ATLAS_OMEGA_AVAILABLE = True
 except Exception:
     _ATLAS_OMEGA_AVAILABLE = False
+try:
+    import smart_integrations as _smart_integrations
+    _SMART_INTEGRATIONS_AVAILABLE = True
+except Exception:
+    _SMART_INTEGRATIONS_AVAILABLE = False
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -229,3 +234,29 @@ if _ATLAS_OMEGA_AVAILABLE:
     print(f"{'='*50}\n")
 else:
     print(_OMEGA_HINT + "\n")
+
+# 14. Smart Integrations — quick sentiment score
+if _SMART_INTEGRATIONS_AVAILABLE:
+    print("=" * 50)
+    print("  🧠 V10 INTELLIGENCE — SENTIMENT SNAPSHOT")
+    print("=" * 50)
+    try:
+        _sent_data = _smart_integrations.sentiment_report()
+        _combined  = _sent_data.get("combined", {})
+        _pcvr_s    = _sent_data.get("pcvr", {})
+        _market_s  = _sent_data.get("market", {})
+        _emoji     = {"BULLISH": "📈", "BEARISH": "📉", "NEUTRAL": "⚖️ "}
+        _cl        = _combined.get("label", "N/A")
+        _cs        = _combined.get("score",  0.0)
+        print(f"  PCVR    : {_pcvr_s.get('label','N/A')} "
+              f"({_pcvr_s.get('score', 0.0):+.2f})")
+        print(f"  Market  : {_market_s.get('label','N/A')} "
+              f"({_market_s.get('score', 0.0):+.2f})")
+        print(f"  Combined: {_emoji.get(_cl,'⚖️ ')} {_cl} ({_cs:+.2f})")
+        _news = _sent_data.get("pcvr_results", [])
+        if _news:
+            print(f"  Headline: {_news[0].get('title','')[:55]}")
+    except Exception:
+        print("  Sentiment data unavailable")
+    print("  Run `smart_integrations.py` for full intelligence report")
+    print(f"{'='*50}\n")
