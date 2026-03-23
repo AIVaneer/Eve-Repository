@@ -25,4 +25,7 @@ project_dont_die/dashboard_cache/
 # automation — never commit runtime logs or custom rules
 project_dont_die/automation_log.json
 project_dont_die/automation_rules_custom.json
+# multichain — never commit runtime config or cache
+project_dont_die/multichain_config.json
+project_dont_die/multichain_cache.json
 atlas_economy.json
