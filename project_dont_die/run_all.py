@@ -1,6 +1,19 @@
 # PCVR — Run Everything
 # One script to see the full picture
 
+# ── Quick import health check ──────────────────────────────
+try:
+    import validate as _validate
+    _imp_passed, _imp_failed = _validate.validate_imports()
+    if _imp_failed:
+        print(f"\n⚠️  WARNING: {_imp_failed} module(s) failed to import.")
+        print("   Run `validate.py` for full system validation.\n")
+    else:
+        print(f"\n✅ All {_imp_passed} modules imported successfully.\n")
+except Exception:
+    pass  # validate.py not available — continue anyway
+# ──────────────────────────────────────────────────────────
+
 from token_data import show as token_info
 from economy import earn, buy, lock, spend, burn, report as econ_report, new_day
 from vault import deposit_revenue, lock_tokens, report as vault_report
