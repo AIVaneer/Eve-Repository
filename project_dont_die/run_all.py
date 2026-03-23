@@ -26,6 +26,11 @@ import whale_tracker
 import scenario
 import alert
 import live_data
+try:
+    import github_sync as _github_sync
+    _GITHUB_SYNC_AVAILABLE = True
+except Exception:
+    _GITHUB_SYNC_AVAILABLE = False
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -187,4 +192,20 @@ for _a in _critical_alerts + _danger_alerts:
     print(f"  {_emoji}  [{_a['category']}] {_a['message']}")
 print()
 print("  Run `alert.py` for full alert dashboard")
+print(f"{'='*50}\n")
+
+# 12. GitHub Sync status
+print("=" * 50)
+print("  🔄 PCVR GITHUB SYNC STATUS")
+print("=" * 50)
+if _GITHUB_SYNC_AVAILABLE:
+    _last = _github_sync.last_sync_time()
+    if _last:
+        _ts = _last[:19].replace("T", " ")
+        print(f"  Last sync: {_ts} UTC")
+    else:
+        print("  ⚠️  Not synced — run github_sync.py")
+    print("  Run `github_sync.py` to sync with GitHub")
+else:
+    print("  ⚠️  github_sync.py not available")
 print(f"{'='*50}\n")
