@@ -25,3 +25,4 @@ project_dont_die/dashboard_cache/
 # automation — never commit runtime logs or custom rules
 project_dont_die/automation_log.json
 project_dont_die/automation_rules_custom.json
+atlas_economy.json
