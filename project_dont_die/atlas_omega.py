@@ -605,6 +605,24 @@ class OmegaEngine:
         ]
         return "\n".join(lines)
 
+    def _section_automation(self):
+        """Return formatted automation status string."""
+        auto_mod, auto_err = _try_import("automation")
+        if auto_mod is None:
+            return f"  ⚠️  automation module not loaded — {auto_err}"
+        try:
+            ae = auto_mod.AutomationEngine()
+            summary = ae.status_summary()
+            active_rules = sum(1 for r in ae.rules if r.get("enabled"))
+            total_rules  = len(ae.rules)
+            lines = [
+                f"  Status         : {summary}",
+                f"  Rules          : {active_rules}/{total_rules} enabled",
+            ]
+            return "\n".join(lines)
+        except Exception as exc:
+            return f"  ⚠️  Could not load automation engine: {exc}"
+
     # ── Master report ────────────────────────────────────────────────────────
 
     def omega_report(self):
@@ -677,6 +695,10 @@ class OmegaEngine:
         # Health
         print("\n🔍 SYSTEM HEALTH (V9 — validate)")
         print(self._section_health())
+
+        # Automation (V10 — automation)
+        print("\n🤖 AUTOMATION STATUS (V10 — automation)")
+        print(self._section_automation())
 
         # Recommendations
         print()
@@ -943,7 +965,9 @@ def _print_menu():
         ("13. intel",    "V10 intelligence report"),
         ("14. save",     "save report"),
         ("15. dashboard","launch visual web dashboard"),
-        ("16. exit",     ""),
+        ("16. auto",     "start/stop automation engine (V10)"),
+        ("17. ios",      "launch Pythonista UI (V10)"),
+        ("18. exit",     ""),
     ]
     print("║" + " Commands:".ljust(W) + "║")
     for cmd, desc in cmds:
@@ -973,7 +997,8 @@ def _run_cli(engine):
             "4": "economy","5": "risk",      "6": "whale",
             "7": "scenario","8": "graph",    "9": "recommend",
             "10":"watch",  "11":"modules",   "12":"trends",
-            "13":"intel",  "14":"save",      "15":"dashboard", "16":"exit",
+            "13":"intel",  "14":"save",      "15":"dashboard",
+            "16":"auto",   "17":"ios",       "18":"exit",
         }
         cmd = aliases.get(raw, raw)
 
@@ -1030,6 +1055,29 @@ def _run_cli(engine):
             else:
                 print(f"  ⚠️  dashboard module not available: {dash_err}")
                 print("  Run `dashboard.py` directly to launch the visual dashboard.")
+        elif cmd == "auto":
+            auto_mod, auto_err = _try_import("automation")
+            if auto_mod is not None:
+                _ae = getattr(engine, "_automation_engine", None)
+                if _ae is None:
+                    _ae = auto_mod.AutomationEngine()
+                    engine._automation_engine = _ae
+                if _ae.running:
+                    _ae.stop()
+                else:
+                    _ae.start()
+                    print(f"  Status: {_ae.status_summary()}")
+            else:
+                print(f"  ⚠️  automation module not available: {auto_err}")
+                print("  Run `automation.py` directly to manage the automation engine.")
+        elif cmd == "ios":
+            wk_mod, wk_err = _try_import("wkapp_ui")
+            if wk_mod is not None:
+                _app = wk_mod.PCVRApp()
+                _app.launch()
+            else:
+                print(f"  ⚠️  wkapp_ui module not available: {wk_err}")
+                print("  Run `wkapp_ui.py` in Pythonista 3 for native iOS UI.")
         elif cmd in ("exit", "quit", "q"):
             print("👋 Atlas Omega shutting down.")
             break

@@ -41,6 +41,16 @@ try:
     _SMART_INTEGRATIONS_AVAILABLE = True
 except Exception:
     _SMART_INTEGRATIONS_AVAILABLE = False
+try:
+    import automation as _automation
+    _AUTOMATION_AVAILABLE = True
+except Exception:
+    _AUTOMATION_AVAILABLE = False
+try:
+    import wkapp_ui as _wkapp_ui
+    _WKAPP_AVAILABLE = True
+except Exception:
+    _WKAPP_AVAILABLE = False
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -269,4 +279,34 @@ print("  Run `dashboard.py` to launch the visual web dashboard")
 print("  → Real-time charts, risk gauges, whale activity,")
 print("    economy stats, and market data in any browser.")
 print("  → Or use the 'dashboard' command in atlas_omega.py")
+print(f"{'='*50}\n")
+
+# ── Automation status ───────────────────────────────────────────────────────
+print("=" * 50)
+print("  🤖 V10 AUTOMATION ENGINE")
+print("=" * 50)
+if _AUTOMATION_AVAILABLE:
+    try:
+        _ae = _automation.AutomationEngine()
+        _auto_status = "INACTIVE (not started)"
+        print(f"  Automation: {_auto_status}")
+        print(f"  Rules     : {len(_ae.rules)} pre-built rules loaded")
+        print(f"  Run `automation.py` to start the automation engine")
+    except Exception:
+        print("  ⚠️  Automation engine could not be initialised")
+else:
+    print("  ⚠️  automation.py not available")
+print(f"{'='*50}\n")
+
+# ── iOS UI hint ─────────────────────────────────────────────────────────────
+print("=" * 50)
+print("  📱 V10 PYTHONISTA UI")
+print("=" * 50)
+if _WKAPP_AVAILABLE:
+    print("  Run `wkapp_ui.py` in Pythonista for native iOS interface")
+    print("  → Native buttons, WKWebView dashboard, live notifications")
+    print("  → Requires Pythonista 3 from the iOS App Store")
+else:
+    print("  Run `wkapp_ui.py` in Pythonista for native iOS interface")
+    print("  → Requires Pythonista 3 from the iOS App Store")
 print(f"{'='*50}\n")

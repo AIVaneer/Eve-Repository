@@ -22,3 +22,7 @@ project_dont_die/integration_keys.json
 project_dont_die/intelligence_cache.json
 # dashboard — runtime cache
 project_dont_die/dashboard_cache/
+# automation — never commit runtime logs or custom rules
+project_dont_die/automation_log.json
+project_dont_die/automation_rules_custom.json
+atlas_economy.json
