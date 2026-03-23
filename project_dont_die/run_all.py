@@ -10,6 +10,7 @@ import economy as e
 import store
 import history
 import whale_tracker
+import scenario
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -122,3 +123,18 @@ print(f"  Locked:       {today['locked']:>10,.0f} PCVR 🔒")
 print(f"  Transactions: {today['transactions']:>10}")
 print()
 history.report()
+
+# 10. Scenario baseline — 30-day health forecast
+print("=" * 50)
+print("  🔮 PCVR SCENARIO — BASELINE 30-DAY FORECAST")
+print("=" * 50)
+_baseline_results = scenario.run_scenario(scenario.get_scenario("baseline"))
+_bs = _baseline_results["summary"]
+print(f"  Health ratio  : {_bs['health_ratio']:.4f}  {_bs['health_status']}")
+print(f"  Total emitted : {_bs['total_emitted']:>14,.0f} PCVR")
+print(f"  Total burned  : {_bs['total_burned']:>14,.0f} PCVR 🔥")
+print(f"  Net emission  : {_bs['net_emission']:>14,.0f} PCVR")
+print(f"  Verdict       : {_bs['verdict']}")
+print()
+print("  Run `scenario.py` for full what-if simulations")
+print(f"{'='*50}\n")
