@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌐 ATLAS OMEGA — PCVR DASHBOARD</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0a0e17;
+      --card:     #111827;
+      --border:   #1f2937;
+      --green:    #10b981;
+      --red:      #ef4444;
+      --amber:    #f59e0b;
+      --blue:     #3b82f6;
+      --purple:   #8b5cf6;
+      --text:     #e5e7eb;
+      --muted:    #6b7280;
+      --mono:     'Courier New', Courier, monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Glow helper ─────────────────────────────────────── */
+    .glow-green { box-shadow: 0 0 12px rgba(16,185,129,.25); }
+    .glow-red   { box-shadow: 0 0 12px rgba(239,68,68,.25); }
+    .glow-amber { box-shadow: 0 0 12px rgba(245,158,11,.25); }
+
+    /* ── Header ──────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .header-title { font-size: 1.2rem; font-weight: 700; letter-spacing: .06em; }
+    .header-meta  { font-size: .75rem; color: var(--muted); font-family: var(--mono); }
+    .header-right { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .conn-badge {
+      display: flex; align-items: center; gap: 5px;
+      font-size: .72rem; font-family: var(--mono);
+    }
+    .conn-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); animation: pulse 2s infinite;
+    }
+    .conn-dot.offline { background: var(--red); animation: none; }
+    @keyframes pulse {
+      0%,100% { opacity:1; } 50% { opacity:.4; }
+    }
+    .refresh-badge { font-size: .7rem; color: var(--muted); font-family: var(--mono); }
+
+    /* ── Main layout ─────────────────────────────────────── */
+    .main { padding: 16px; max-width: 1400px; margin: 0 auto; }
+
+    /* ── Stat bar ────────────────────────────────────────── */
+    .stat-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: transform .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    .stat-value { font-size: 1.4rem; font-weight: 700; font-family: var(--mono); line-height: 1; }
+    .stat-sub   { font-size: .72rem; margin-top: 4px; }
+    .pos { color: var(--green); }
+    .neg { color: var(--red);   }
+    .neu { color: var(--muted); }
+    .amb { color: var(--amber); }
+
+    /* ── Card grid ───────────────────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Panel card ──────────────────────────────────────── */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--green);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .panel-body { padding: 14px 16px; }
+
+    /* ── Chart container ─────────────────────────────────── */
+    .chart-wrap { position: relative; height: 220px; }
+    .chart-wrap-sm { position: relative; height: 160px; }
+
+    /* ── Risk gauge ──────────────────────────────────────── */
+    .gauge-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 0; }
+    .gauge-score { font-size: 2.6rem; font-weight: 800; font-family: var(--mono); line-height: 1; }
+    .gauge-label { font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; }
+    .gauge-bar {
+      width: 100%; height: 10px; border-radius: 5px;
+      background: linear-gradient(90deg, var(--green) 0%, var(--amber) 50%, var(--red) 100%);
+      position: relative;
+    }
+    .gauge-thumb {
+      position: absolute; top: -4px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #fff; border: 3px solid var(--card);
+      transform: translateX(-50%);
+      transition: left .6s ease;
+    }
+
+    /* ── Data rows ───────────────────────────────────────── */
+    .data-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .82rem;
+    }
+    .data-row:last-child { border-bottom: none; }
+    .data-key  { color: var(--muted); }
+    .data-val  { font-family: var(--mono); font-weight: 600; }
+
+    /* ── Alerts table ────────────────────────────────────── */
+    .alerts-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+    .alerts-table th {
+      text-align: left; padding: 6px 10px;
+      color: var(--muted); font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+    .alerts-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .alerts-table tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: .68rem; font-weight: 600; text-transform: uppercase;
+    }
+    .badge-critical { background: rgba(239,68,68,.2);  color: var(--red);   }
+    .badge-danger   { background: rgba(239,68,68,.15); color: #f87171; }
+    .badge-warning  { background: rgba(245,158,11,.2); color: var(--amber); }
+    .badge-info     { background: rgba(59,130,246,.2); color: var(--blue);  }
+
+    /* ── Scenario pills ──────────────────────────────────── */
+    .scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .scenario-pill {
+      text-align: center; padding: 12px 6px;
+      border-radius: 8px; font-size: .75rem;
+      border: 1px solid var(--border);
+    }
+    .scenario-pill .s-name  { font-weight: 600; margin-bottom: 4px; }
+    .scenario-pill .s-emoji { font-size: 1.4rem; }
+    .scenario-pill .s-label { font-size: .68rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── Bottom bar ──────────────────────────────────────── */
+    .bottom-bar {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .mini-stat {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: .75rem;
+    }
+    .mini-stat .m-label { color: var(--muted); margin-bottom: 2px; }
+    .mini-stat .m-val   { font-family: var(--mono); font-size: .9rem; font-weight: 600; }
+
+    /* ── System health bar ───────────────────────────────── */
+    .health-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .health-label { font-size: .75rem; width: 130px; color: var(--muted); }
+    .health-bar-bg { flex: 1; height: 6px; border-radius: 3px; background: var(--border); }
+    .health-bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+
+    /* ── Recommendations ─────────────────────────────────── */
+    .rec-list { list-style: none; }
+    .rec-list li {
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .82rem; display: flex; gap: 8px;
+    }
+    .rec-list li:last-child { border-bottom: none; }
+    .rec-num { color: var(--green); font-weight: 700; font-family: var(--mono); }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      text-align: center; padding: 16px;
+      font-size: .7rem; color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+      font-family: var(--mono);
+    }
+
+    /* ── Number transition ───────────────────────────────── */
+    .num-transition { transition: color .3s ease; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────── -->
+<header>
+  <div>
+    <div class="header-title">🌐 ATLAS OMEGA — PCVR DASHBOARD</div>
+    <div class="header-meta">
+      Contract: <span id="hdr-contract">0x05c870C5C6E7AF4298976886471c69Fc722107e4</span>
+      &nbsp;│&nbsp; Updated: <span id="hdr-updated">—</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="conn-badge">
+      <div class="conn-dot" id="conn-dot"></div>
+      <span id="conn-label">CONNECTED</span>
+    </div>
+    <div class="refresh-badge" id="refresh-badge">next refresh in 30s</div>
+  </div>
+</header>
+
+<!-- ── Main ──────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- Stat bar -->
+  <div class="stat-bar">
+    <div class="stat-card glow-green">
+      <div class="stat-label">💰 Price</div>
+      <div class="stat-value num-transition" id="stat-price">—</div>
+      <div class="stat-sub neu" id="stat-price-sub">Loading…</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📈 24 h Change</div>
+      <div class="stat-value num-transition" id="stat-change">—</div>
+      <div class="stat-sub neu" id="stat-change-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">💧 Volume</div>
+      <div class="stat-value num-transition" id="stat-vol">—</div>
+      <div class="stat-sub neu" id="stat-vol-sub">24 h</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">🔒 Liquidity</div>
+      <div class="stat-value num-transition" id="stat-liq">—</div>
+      <div class="stat-sub neu" id="stat-liq-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">💎 Market Cap</div>
+      <div class="stat-value num-transition" id="stat-mcap">—</div>
+      <div class="stat-sub neu" id="stat-mcap-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">🚨 Risk Score</div>
+      <div class="stat-value num-transition" id="stat-risk">—</div>
+      <div class="stat-sub" id="stat-risk-sub">—</div>
+    </div>
+  </div>
+
+  <!-- Price chart (full width) -->
+  <div class="panel" style="margin-bottom:14px;">
+    <div class="panel-header">📊 Price History</div>
+    <div class="panel-body">
+      <div class="chart-wrap">
+        <canvas id="priceChart"></canvas>
+      </div>
+      <div id="chart-note" style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:6px;">
+        Live price data — refreshes every 30 s
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Risk gauge + Economy -->
+  <div class="grid-2">
+
+    <!-- Risk Gauge -->
+    <div class="panel glow-amber" id="risk-panel">
+      <div class="panel-header">🚨 Risk Assessment</div>
+      <div class="panel-body">
+        <div class="gauge-wrap">
+          <div class="gauge-score" id="risk-score">—</div>
+          <div class="gauge-label" id="risk-label">—</div>
+          <div class="gauge-bar" style="margin:4px 0 2px;">
+            <div class="gauge-thumb" id="risk-thumb" style="left:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;width:100%;font-size:.65rem;color:var(--muted);">
+            <span>0 LOW</span><span>50</span><span>100 CRITICAL</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <div class="data-row"><span class="data-key">Active alerts</span><span class="data-val" id="risk-active">—</span></div>
+          <div class="data-row"><span class="data-key">Critical</span><span class="data-val neg" id="risk-critical">—</span></div>
+          <div class="data-row"><span class="data-key">Danger</span><span class="data-val amb" id="risk-danger">—</span></div>
+          <div class="data-row"><span class="data-key">Warning</span><span class="data-val" id="risk-warning">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Economy -->
+    <div class="panel">
+      <div class="panel-header">💰 Economy Status</div>
+      <div class="panel-body">
+        <div class="data-row"><span class="data-key">Total Supply</span><span class="data-val" id="eco-supply">—</span></div>
+        <div class="data-row"><span class="data-key">Circulating</span><span class="data-val" id="eco-circ">—</span></div>
+        <div class="data-row"><span class="data-key">Emitted</span><span class="data-val pos" id="eco-emitted">—</span></div>
+        <div class="data-row"><span class="data-key">Burned</span><span class="data-val neg" id="eco-burned">—</span></div>
+        <div class="data-row"><span class="data-key">Locked</span><span class="data-val amb" id="eco-locked">—</span></div>
+        <div class="data-row"><span class="data-key">Spent</span><span class="data-val" id="eco-spent">—</span></div>
+        <div class="data-row"><span class="data-key">Today's activity</span><span class="data-val" id="eco-today">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 3: Whale + Vault + Sentiment -->
+  <div class="grid-3">
+
+    <!-- Whale Tracker -->
+    <div class="panel">
+      <div class="panel-header">🐋 Whale Tracker</div>
+      <div class="panel-body">
+        <div class="chart-wrap-sm">
+          <canvas id="whaleChart"></canvas>
+        </div>
+        <div class="data-row" style="margin-top:8px;"><span class="data-key">Gini coefficient</span><span class="data-val" id="whale-gini">—</span></div>
+        <div class="data-row"><span class="data-key">Gini label</span><span class="data-val" id="whale-gini-label">—</span></div>
+        <div class="data-row"><span class="data-key">Top holder %</span><span class="data-val" id="whale-top-pct">—</span></div>
+        <div class="data-row"><span class="data-key">Wallets tracked</span><span class="data-val" id="whale-wallets">—</span></div>
+      </div>
+    </div>
+
+    <!-- Vault Status -->
+    <div class="panel">
+      <div class="panel-header">🏦 Vault Status</div>
+      <div class="panel-body">
+        <div class="data-row"><span class="data-key">Vault Balance</span><span class="data-val" id="vault-balance">—</span></div>
+        <div class="data-row"><span class="data-key">Total Locked</span><span class="data-val amb" id="vault-locked">—</span></div>
+        <div class="data-row"><span class="data-key">APY</span><span class="data-val pos" id="vault-apy">—</span></div>
+        <div class="data-row"><span class="data-key">Active lockers</span><span class="data-val" id="vault-lockers">—</span></div>
+        <div style="margin-top:16px;font-size:.72rem;color:var(--muted);">
+          Lock period: 90 days • Revenue-backed
+        </div>
+      </div>
+    </div>
+
+    <!-- Sentiment -->
+    <div class="panel">
+      <div class="panel-header">📊 Sentiment Intelligence</div>
+      <div class="panel-body">
+        <div class="chart-wrap-sm">
+          <canvas id="sentimentChart"></canvas>
+        </div>
+        <div class="data-row" style="margin-top:8px;"><span class="data-key">PCVR signal</span><span class="data-val" id="sent-pcvr">—</span></div>
+        <div class="data-row"><span class="data-key">Market signal</span><span class="data-val" id="sent-market">—</span></div>
+        <div class="data-row"><span class="data-key">Combined</span><span class="data-val" id="sent-combined">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 4: Scenarios -->
+  <div class="panel" style="margin-bottom:14px;">
+    <div class="panel-header">🔮 Scenario Outlook</div>
+    <div class="panel-body">
+      <div class="scenario-grid" id="scenario-grid">
+        <div class="scenario-pill" id="sc-baseline"><div class="s-emoji">⏳</div><div class="s-name">Baseline</div><div class="s-label">Loading…</div></div>
+        <div class="scenario-pill" id="sc-utopia"><div class="s-emoji">⏳</div><div class="s-name">Utopia</div><div class="s-label">Loading…</div></div>
+        <div class="scenario-pill" id="sc-death"><div class="s-emoji">⏳</div><div class="s-name">Death Spiral</div><div class="s-label">Loading…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 5: Active Alerts -->
+  <div class="panel" style="margin-bottom:14px;">
+    <div class="panel-header">🚨 Active Alerts</div>
+    <div class="panel-body" style="padding:0;">
+      <table class="alerts-table">
+        <thead><tr>
+          <th>Level</th><th>Category</th><th>Time</th><th>Message</th>
+        </tr></thead>
+        <tbody id="alerts-tbody">
+          <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Loading alerts…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- System health -->
+  <div class="panel" style="margin-bottom:14px;">
+    <div class="panel-header">🔍 System Health</div>
+    <div class="panel-body">
+      <div id="health-bars"></div>
+      <div class="data-row" style="margin-top:10px;">
+        <span class="data-key">Modules loaded</span>
+        <span class="data-val" id="health-modules">—</span>
+      </div>
+      <div class="data-row">
+        <span class="data-key">Validation status</span>
+        <span class="data-val" id="health-status">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar: store / ledger / sync -->
+  <div class="bottom-bar">
+    <div class="mini-stat"><div class="m-label">🏪 Store Items</div><div class="m-val" id="mini-store">—</div></div>
+    <div class="mini-stat"><div class="m-label">📋 Ledger Events</div><div class="m-val" id="mini-ledger">—</div></div>
+    <div class="mini-stat"><div class="m-label">🔄 Last Sync</div><div class="m-val" id="mini-sync">—</div></div>
+    <div class="mini-stat"><div class="m-label">📡 API Source</div><div class="m-val" id="mini-source">—</div></div>
+    <div class="mini-stat"><div class="m-label">🌐 Network</div><div class="m-val" id="mini-network">Cronos</div></div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="panel" style="margin-top:14px;">
+    <div class="panel-header">🧠 Recommendations</div>
+    <div class="panel-body">
+      <ul class="rec-list" id="rec-list">
+        <li><span class="rec-num">…</span><span>Loading recommendations…</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<footer>
+  PCVR Studios © 2025 &nbsp;│&nbsp; Earn → Hold → Spend → Buy → Earn<br>
+  V10 Dashboard — See everything. Control everything. From any browser.
+</footer>
+
+<!-- ── JavaScript ─────────────────────────────────────────── -->
+<script>
+"use strict";
+
+// ── Chart instances ────────────────────────────────────────
+let priceChart, whaleChart, sentimentChart;
+let refreshTimer = 30;
+let connected = false;
+
+// ── Formatters ────────────────────────────────────────────
+function formatPrice(p) {
+  if (p === null || p === undefined || isNaN(p)) return "—";
+  const n = Number(p);
+  if (n === 0) return "$0.00000000";
+  if (n < 0.000001) return "$" + n.toFixed(10);
+  if (n < 0.01)     return "$" + n.toFixed(8);
+  if (n < 1)        return "$" + n.toFixed(6);
+  if (n < 1000)     return "$" + n.toFixed(4);
+  return "$" + n.toLocaleString(undefined, {maximumFractionDigits:2});
+}
+
+function formatNumber(n, decimals=2) {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  const v = Number(n);
+  if (Math.abs(v) >= 1e9) return (v/1e9).toFixed(1) + "B";
+  if (Math.abs(v) >= 1e6) return (v/1e6).toFixed(1) + "M";
+  if (Math.abs(v) >= 1e3) return (v/1e3).toFixed(1) + "K";
+  return v.toLocaleString(undefined, {maximumFractionDigits: decimals});
+}
+
+function formatPct(p) {
+  if (p === null || p === undefined || isNaN(p)) return "—";
+  const v = Number(p);
+  return (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+}
+
+function getStatusColor(score) {
+  const s = Number(score) || 0;
+  if (s < 30) return "var(--green)";
+  if (s < 60) return "var(--amber)";
+  return "var(--red)";
+}
+
+function getStatusLabel(score) {
+  const s = Number(score) || 0;
+  if (s < 30) return "🟢 LOW";
+  if (s < 60) return "🟡 MEDIUM";
+  if (s < 80) return "🟠 HIGH";
+  return "🔴 CRITICAL";
+}
+
+function timeAgo(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  if (isNaN(d)) return ts;
+  const secs = Math.floor((Date.now() - d) / 1000);
+  if (secs < 60)  return secs + "s ago";
+  if (secs < 3600) return Math.floor(secs/60) + "m ago";
+  if (secs < 86400) return Math.floor(secs/3600) + "h ago";
+  return Math.floor(secs/86400) + "d ago";
+}
+
+function sentimentEmoji(label) {
+  if (!label) return "⚖️";
+  if (label.toUpperCase().includes("BULL")) return "📈";
+  if (label.toUpperCase().includes("BEAR")) return "📉";
+  return "⚖️";
+}
+
+// ── Chart initialisation ──────────────────────────────────
+function initCharts() {
+  if (typeof Chart === "undefined") {
+    document.getElementById("chart-note").textContent =
+      "⚠️ Chart.js unavailable (offline?) — data still updates below";
+    return;
+  }
+  Chart.defaults.color = "#6b7280";
+  Chart.defaults.borderColor = "rgba(255,255,255,.06)";
+
+  // Price line chart
+  const priceCtx = document.getElementById("priceChart").getContext("2d");
+  priceChart = new Chart(priceCtx, {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [{
+        label: "PCVR Price",
+        data: [],
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16,185,129,.08)",
+        tension: 0.4,
+        fill: true,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: "rgba(255,255,255,.04)" } },
+        y: {
+          grid: { color: "rgba(255,255,255,.04)" },
+          ticks: { callback: v => formatPrice(v) }
+        }
+      }
+    }
+  });
+
+  // Whale pie chart
+  const whaleCtx = document.getElementById("whaleChart").getContext("2d");
+  whaleChart = new Chart(whaleCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Top Holder", "Others"],
+      datasets: [{
+        data: [0, 100],
+        backgroundColor: ["#8b5cf6","#1f2937"],
+        borderColor: "#111827",
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom", labels: { font: { size: 10 } } } },
+      cutout: "68%",
+    }
+  });
+
+  // Sentiment bar chart
+  const sentCtx = document.getElementById("sentimentChart").getContext("2d");
+  sentimentChart = new Chart(sentCtx, {
+    type: "bar",
+    data: {
+      labels: ["PCVR", "Market", "Combined"],
+      datasets: [{
+        label: "Score",
+        data: [0, 0, 0],
+        backgroundColor: ["#10b981","#3b82f6","#8b5cf6"],
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          min: -1, max: 1,
+          grid: { color: "rgba(255,255,255,.04)" },
+          ticks: { callback: v => v.toFixed(1) }
+        }
+      }
+    }
+  });
+}
+
+// ── Update dashboard from data ────────────────────────────
+function updateDashboard(d) {
+  if (!d) return;
+  const now = new Date().toLocaleString();
+  document.getElementById("hdr-updated").textContent = now;
+
+  // ── Market ──
+  const mkt = d.market || {};
+  const price = mkt.price_usd || mkt.price || 0;
+  const change24 = mkt.change_24h || 0;
+  const vol = mkt.volume_24h || 0;
+  const liq = mkt.liquidity_usd || mkt.liquidity || 0;
+  const mcap = mkt.market_cap || mkt.fdv || 0;
+  const source = mkt.source || "API";
+
+  setText("stat-price", formatPrice(price));
+  setClass("stat-price", price > 0 ? "stat-value pos" : "stat-value neu");
+  setText("stat-price-sub", source);
+  setText("stat-change", formatPct(change24));
+  setClass("stat-change", "stat-value " + (change24 >= 0 ? "pos" : "neg"));
+  setText("stat-vol", "$" + formatNumber(vol));
+  setText("stat-liq", "$" + formatNumber(liq));
+  setText("stat-mcap", "$" + formatNumber(mcap));
+  setText("mini-source", source);
+
+  // Price history for chart
+  updatePriceChart(mkt);
+
+  // ── Risk ──
+  const risk = d.risk || {};
+  const score = risk.score || 0;
+  setText("stat-risk", String(score));
+  setText("stat-risk-sub", getStatusLabel(score));
+  setClass("stat-risk", "stat-value num-transition");
+  document.getElementById("stat-risk").style.color = getStatusColor(score);
+  setText("risk-score", String(score));
+  document.getElementById("risk-score").style.color = getStatusColor(score);
+  setText("risk-label", getStatusLabel(score));
+  document.getElementById("risk-thumb").style.left = Math.min(score, 100) + "%";
+  setText("risk-active",   String(risk.active   ?? "—"));
+  setText("risk-critical", String(risk.critical ?? "—"));
+  setText("risk-danger",   String(risk.danger   ?? "—"));
+  setText("risk-warning",  String(risk.warning  ?? "—"));
+
+  // Panel glow
+  const rPanel = document.getElementById("risk-panel");
+  rPanel.className = "panel " + (score >= 60 ? "glow-red" : score >= 30 ? "glow-amber" : "glow-green");
+
+  // ── Economy ──
+  const eco = d.economy || {};
+  setText("eco-supply",  formatNumber(eco.supply,  0));
+  setText("eco-circ",    formatNumber(eco.circ,    0));
+  setText("eco-emitted", formatNumber(eco.emitted, 0));
+  setText("eco-burned",  formatNumber(eco.burned,  0));
+  setText("eco-locked",  formatNumber(eco.locked,  0));
+  setText("eco-spent",   formatNumber(eco.spent,   0));
+  setText("eco-today",   formatNumber(eco.today,   0));
+
+  // ── Vault ──
+  const vlt = d.vault || {};
+  setText("vault-balance", formatNumber(vlt.balance, 0) + " PCVR");
+  setText("vault-locked",  formatNumber(vlt.locked,  0) + " PCVR");
+  setText("vault-apy",     (vlt.apy !== undefined ? vlt.apy.toFixed(1) + "%" : "—"));
+  setText("vault-lockers", String(Array.isArray(vlt.lockers) ? vlt.lockers.length : (vlt.lockers ?? "—")));
+
+  // ── Whale ──
+  const whl = d.whale || {};
+  const topPct = whl.top_holder_pct || 0;
+  const gini   = whl.gini || 0;
+  setText("whale-gini",       gini.toFixed(4));
+  setText("whale-gini-label", whl.gini_label || "—");
+  setText("whale-top-pct",    topPct.toFixed(1) + "%");
+  setText("whale-wallets",    String(whl.total_wallets ?? "—"));
+  if (whaleChart) {
+    whaleChart.data.datasets[0].data = [topPct, Math.max(0, 100 - topPct)];
+    whaleChart.update("none");
+  }
+
+  // ── Sentiment ──
+  const sent = d.sentiment || d.intelligence || {};
+  const pcvrS = sent.pcvr || {};
+  const mktS  = sent.market || {};
+  const combS = sent.combined || {};
+  const ps = pcvrS.score ?? 0;
+  const ms = mktS.score  ?? 0;
+  const cs = combS.score ?? 0;
+  const pl = pcvrS.label || "—";
+  const ml = mktS.label  || "—";
+  const cl = combS.label || "—";
+  setText("sent-pcvr",     sentimentEmoji(pl) + " " + pl + " (" + (ps >= 0 ? "+" : "") + ps.toFixed(2) + ")");
+  setText("sent-market",   sentimentEmoji(ml) + " " + ml + " (" + (ms >= 0 ? "+" : "") + ms.toFixed(2) + ")");
+  setText("sent-combined", sentimentEmoji(cl) + " " + cl + " (" + (cs >= 0 ? "+" : "") + cs.toFixed(2) + ")");
+  if (sentimentChart) {
+    sentimentChart.data.datasets[0].data = [ps, ms, cs];
+    const colors = [ps,ms,cs].map(v => v >= 0 ? "#10b981" : "#ef4444");
+    sentimentChart.data.datasets[0].backgroundColor = colors;
+    sentimentChart.update("none");
+  }
+
+  // ── Scenarios ──
+  const sc = d.scenario || {};
+  renderScenario("sc-baseline", "Baseline",     sc.baseline);
+  renderScenario("sc-utopia",   "Best Case",    sc.utopia);
+  renderScenario("sc-death",    "Death Spiral", sc.death_spiral);
+
+  // ── Alerts ──
+  const alerts = d.alerts || [];
+  renderAlerts(alerts);
+
+  // ── Health ──
+  const health = d.health || {};
+  renderHealth(health, d);
+
+  // ── Store / Ledger / Sync ──
+  const store  = d.store  || {};
+  const ledger = d.ledger || {};
+  const sync   = d.sync   || {};
+  setText("mini-store",  String(store.total_items ?? store.item_count ?? "—") + " items");
+  setText("mini-ledger", String(ledger.count ?? "—") + " events");
+  setText("mini-sync",   sync.last_sync ? timeAgo(sync.last_sync) : (sync.status || "—"));
+
+  // ── Recommendations ──
+  const recs = d.recommendations || [];
+  renderRecs(recs);
+}
+
+function updatePriceChart(mkt) {
+  if (!priceChart) return;
+  const history = mkt.price_history || [];
+  if (history.length > 0) {
+    priceChart.data.labels = history.map((_, i) => i === history.length - 1 ? "now" : "-" + (history.length - 1 - i) + "m");
+    priceChart.data.datasets[0].data = history;
+  } else {
+    // Single data point — just show current price
+    const price = mkt.price_usd || mkt.price || 0;
+    if (price > 0) {
+      const now = new Date();
+      if (priceChart.data.labels.length > 48) {
+        priceChart.data.labels.shift();
+        priceChart.data.datasets[0].data.shift();
+      }
+      priceChart.data.labels.push(now.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));
+      priceChart.data.datasets[0].data.push(price);
+    }
+  }
+  priceChart.update("none");
+}
+
+function renderScenario(id, name, data) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!data || typeof data !== "object") {
+    el.innerHTML = `<div class="s-emoji">⏳</div><div class="s-name">${name}</div><div class="s-label">No data</div>`;
+    el.style.borderColor = "var(--border)";
+    return;
+  }
+  const survives = data.survives ?? data.token_survives ?? data.health_score > 0.5;
+  const label = data.label || (survives ? "SURVIVES" : "FAILS");
+  const emoji = survives ? "✅" : "❌";
+  const score = data.health_score !== undefined ? data.health_score.toFixed(2) : "";
+  el.innerHTML = `
+    <div class="s-emoji">${emoji}</div>
+    <div class="s-name">${name}</div>
+    <div class="s-label">${label}${score ? " · " + score : ""}</div>`;
+  el.style.borderColor = survives ? "var(--green)" : "var(--red)";
+  el.style.background = survives
+    ? "rgba(16,185,129,.05)"
+    : "rgba(239,68,68,.05)";
+}
+
+function renderAlerts(alerts) {
+  const tbody = document.getElementById("alerts-tbody");
+  if (!alerts || alerts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">🟢 No active alerts</td></tr>';
+    return;
+  }
+  tbody.innerHTML = alerts.slice(0, 20).map(a => {
+    const sev = (a.severity || "info").toLowerCase();
+    const badgeClass = "badge badge-" + sev;
+    const ts = a.timestamp ? timeAgo(a.timestamp) : "—";
+    const cat = a.category || a.type || "—";
+    const msg = (a.message || "").substring(0, 80);
+    return `<tr>
+      <td><span class="${badgeClass}">${sev.toUpperCase()}</span></td>
+      <td>${cat}</td>
+      <td>${ts}</td>
+      <td>${msg}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderHealth(health, d) {
+  const container = document.getElementById("health-bars");
+  const checks = health.checks || {};
+  const rows = Object.entries(checks).slice(0, 6).map(([k, v]) => {
+    const ok = v === true || v === "ok" || v === "pass";
+    const pct = ok ? 100 : 0;
+    const color = ok ? "var(--green)" : "var(--red)";
+    return `<div class="health-row">
+      <div class="health-label">${k}</div>
+      <div class="health-bar-bg">
+        <div class="health-bar-fill" style="width:${pct}%;background:${color};"></div>
+      </div>
+      <span style="font-size:.7rem;margin-left:6px;color:${color};">${ok ? "✅" : "❌"}</span>
+    </div>`;
+  }).join("");
+  container.innerHTML = rows || '<div style="color:var(--muted);font-size:.78rem;">Health checks unavailable</div>';
+
+  const loaded = d.system_modules_loaded ?? "—";
+  const total  = d.system_modules_total  ?? "—";
+  setText("health-modules", loaded + "/" + total);
+  setText("health-status",  health.overall || health.status || (loaded === total ? "🟢 ALL SYSTEMS GO" : "⚠️ PARTIAL"));
+}
+
+function renderRecs(recs) {
+  const el = document.getElementById("rec-list");
+  if (!recs || recs.length === 0) {
+    el.innerHTML = '<li><span class="rec-num">—</span><span style="color:var(--muted)">No recommendations at this time.</span></li>';
+    return;
+  }
+  el.innerHTML = recs.map((r, i) =>
+    `<li><span class="rec-num">${i+1}.</span><span>${r}</span></li>`
+  ).join("");
+}
+
+// ── DOM helpers ───────────────────────────────────────────
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setClass(id, cls) {
+  const el = document.getElementById(id);
+  if (el) el.className = cls;
+}
+
+// ── Data fetching ─────────────────────────────────────────
+async function fetchData() {
+  try {
+    const resp = await fetch("/api/data");
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const data = await resp.json();
+    setConnected(true);
+    updateDashboard(data);
+  } catch (e) {
+    setConnected(false);
+    console.warn("fetchData error:", e);
+  }
+}
+
+function setConnected(ok) {
+  connected = ok;
+  const dot   = document.getElementById("conn-dot");
+  const label = document.getElementById("conn-label");
+  if (ok) {
+    dot.className = "conn-dot";
+    label.textContent = "CONNECTED";
+  } else {
+    dot.className = "conn-dot offline";
+    label.textContent = "OFFLINE";
+  }
+}
+
+// ── Refresh countdown ─────────────────────────────────────
+function startRefreshLoop() {
+  refreshTimer = 30;
+  setInterval(() => {
+    refreshTimer--;
+    document.getElementById("refresh-badge").textContent =
+      refreshTimer > 0 ? "next refresh in " + refreshTimer + "s" : "refreshing…";
+    if (refreshTimer <= 0) {
+      refreshTimer = 30;
+      fetchData();
+    }
+  }, 1000);
+}
+
+// ── Init ──────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", () => {
+  initCharts();
+  fetchData();
+  startRefreshLoop();
+});
+</script>
+</body>
+</html>

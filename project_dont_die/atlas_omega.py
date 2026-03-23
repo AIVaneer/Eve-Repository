@@ -942,7 +942,8 @@ def _print_menu():
         ("12. trends",   "history & trends"),
         ("13. intel",    "V10 intelligence report"),
         ("14. save",     "save report"),
-        ("15. exit",     ""),
+        ("15. dashboard","launch visual web dashboard"),
+        ("16. exit",     ""),
     ]
     print("║" + " Commands:".ljust(W) + "║")
     for cmd, desc in cmds:
@@ -972,7 +973,7 @@ def _run_cli(engine):
             "4": "economy","5": "risk",      "6": "whale",
             "7": "scenario","8": "graph",    "9": "recommend",
             "10":"watch",  "11":"modules",   "12":"trends",
-            "13":"intel",  "14":"save",      "15":"exit",
+            "13":"intel",  "14":"save",      "15":"dashboard", "16":"exit",
         }
         cmd = aliases.get(raw, raw)
 
@@ -1016,6 +1017,19 @@ def _run_cli(engine):
                 print("  ⚠️  smart_integrations module not loaded — run smart_integrations.py")
         elif cmd == "save":
             engine.save_report()
+        elif cmd == "dashboard":
+            dash_mod, dash_err = _try_import("dashboard")
+            if dash_mod is not None:
+                ds = dash_mod.DashboardServer()
+                ds.start()
+                try:
+                    input("  Press Enter to stop the dashboard…")
+                except (EOFError, KeyboardInterrupt):
+                    pass
+                ds.stop()
+            else:
+                print(f"  ⚠️  dashboard module not available: {dash_err}")
+                print("  Run `dashboard.py` directly to launch the visual dashboard.")
         elif cmd in ("exit", "quit", "q"):
             print("👋 Atlas Omega shutting down.")
             break
