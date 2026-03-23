@@ -47,6 +47,7 @@ _MODULE_META = {
     "validate":            "V9",
     "github_sync":         "V9",
     "smart_integrations":  "V10",
+    "multichain":          "V10",
     "run_all":             "V7/V8/V9/V10",
 }
 
@@ -623,6 +624,43 @@ class OmegaEngine:
         except Exception as exc:
             return f"  ⚠️  Could not load automation engine: {exc}"
 
+    def _section_multichain(self):
+        """Return formatted multi-chain summary string."""
+        mc_mod = self.modules.get("multichain")
+        if mc_mod is None:
+            return "  ⚠️  multichain module not loaded — run multichain.py"
+        try:
+            tracker = mc_mod.MultiChainTracker()
+            aggr    = tracker.aggregate_liquidity()
+            n       = len(aggr.get("chains", {}))
+            total   = aggr.get("total_liquidity_usd", 0)
+            vol     = aggr.get("total_volume_24h",    0)
+            dom     = aggr.get("dominant_chain",       "cronos")
+            div     = aggr.get("diversity_score",      0.0)
+            disc    = tracker.price_discrepancy()
+            if div >= 0.7:
+                div_label = "HIGH"
+            elif div >= 0.4:
+                div_label = "MODERATE"
+            else:
+                div_label = "LOW"
+            lines = [
+                f"  Chains Active  : {n}",
+                f"  Total Liquidity: ${total:,.0f}",
+                f"  Total Volume   : ${vol:,.0f} (24h)",
+                f"  Dominant Chain : {dom}",
+                f"  Diversity      : {div:.2f} ({div_label})",
+            ]
+            if disc:
+                best = disc[0]
+                lines.append(
+                    f"  ⚠️  Arbitrage   : {best['spread_pct']:.1f}% spread"
+                    f" ({best['chain_low']} / {best['chain_high']})"
+                )
+            return "\n".join(lines)
+        except Exception as exc:
+            return f"  ⚠️  Could not load multi-chain data: {exc}"
+
     # ── Master report ────────────────────────────────────────────────────────
 
     def omega_report(self):
@@ -699,6 +737,10 @@ class OmegaEngine:
         # Automation (V10 — automation)
         print("\n🤖 AUTOMATION STATUS (V10 — automation)")
         print(self._section_automation())
+
+        # Multi-Chain (V10 — multichain)
+        print("\n🔗 MULTI-CHAIN STATUS (V10 — multichain)")
+        print(self._section_multichain())
 
         # Recommendations
         print()
@@ -967,7 +1009,8 @@ def _print_menu():
         ("15. dashboard","launch visual web dashboard"),
         ("16. auto",     "start/stop automation engine (V10)"),
         ("17. ios",      "launch Pythonista UI (V10)"),
-        ("18. exit",     ""),
+        ("18. multichain","multi-chain tracker (V10)"),
+        ("19. exit",     ""),
     ]
     print("║" + " Commands:".ljust(W) + "║")
     for cmd, desc in cmds:
@@ -998,7 +1041,8 @@ def _run_cli(engine):
             "7": "scenario","8": "graph",    "9": "recommend",
             "10":"watch",  "11":"modules",   "12":"trends",
             "13":"intel",  "14":"save",      "15":"dashboard",
-            "16":"auto",   "17":"ios",       "18":"exit",
+            "16":"auto",   "17":"ios",       "18":"multichain",
+            "19":"exit",
         }
         cmd = aliases.get(raw, raw)
 
@@ -1078,6 +1122,13 @@ def _run_cli(engine):
             else:
                 print(f"  ⚠️  wkapp_ui module not available: {wk_err}")
                 print("  Run `wkapp_ui.py` in Pythonista 3 for native iOS UI.")
+        elif cmd == "multichain":
+            mc_mod, mc_err = _try_import("multichain")
+            if mc_mod is not None:
+                mc_mod._run_cli()
+            else:
+                print(f"  ⚠️  multichain module not available: {mc_err}")
+                print("  Run `multichain.py` directly for the multi-chain tracker.")
         elif cmd in ("exit", "quit", "q"):
             print("👋 Atlas Omega shutting down.")
             break

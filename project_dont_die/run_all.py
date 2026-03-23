@@ -51,6 +51,11 @@ try:
     _WKAPP_AVAILABLE = True
 except Exception:
     _WKAPP_AVAILABLE = False
+try:
+    import multichain as _multichain
+    _MULTICHAIN_AVAILABLE = True
+except Exception:
+    _MULTICHAIN_AVAILABLE = False
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -309,4 +314,37 @@ if _WKAPP_AVAILABLE:
 else:
     print("  Run `wkapp_ui.py` in Pythonista for native iOS interface")
     print("  → Requires Pythonista 3 from the iOS App Store")
+print(f"{'='*50}\n")
+
+# ── Multi-Chain summary ─────────────────────────────────────────────────────
+print("=" * 50)
+print("  🔗 V10 MULTI-CHAIN TRACKER")
+print("=" * 50)
+if _MULTICHAIN_AVAILABLE:
+    try:
+        _mc_tracker = _multichain.MultiChainTracker()
+        _mc_aggr    = _mc_tracker.aggregate_liquidity()
+        _mc_n       = len(_mc_aggr.get("chains", {}))
+        _mc_liq     = _mc_aggr.get("total_liquidity_usd", 0)
+        _mc_vol     = _mc_aggr.get("total_volume_24h",    0)
+        _mc_dom     = _mc_aggr.get("dominant_chain",      "cronos")
+        _mc_div     = _mc_aggr.get("diversity_score",     0.0)
+        if _mc_n > 0:
+            print(f"  Chains Active : {_mc_n}")
+            print(f"  Liq (total)   : ${_mc_liq:,.0f}")
+            print(f"  Vol (24h)     : ${_mc_vol:,.0f}")
+            print(f"  Dominant      : {_mc_dom}")
+            print(f"  Diversity     : {_mc_div:.2f}")
+        else:
+            print("  No cross-chain pair data available")
+        _mc_disc = _mc_tracker.price_discrepancy()
+        if _mc_disc:
+            _best = _mc_disc[0]
+            print(f"  ⚠️  Price spread {_best['spread_pct']:.1f}% "
+                  f"({_best['chain_low']} / {_best['chain_high']}) — arbitrage opportunity")
+    except Exception:
+        print("  Multi-chain data unavailable")
+    print("  Run `multichain.py` for full multi-chain tracking")
+else:
+    print("  Run `multichain.py` for full multi-chain tracking")
 print(f"{'='*50}\n")
