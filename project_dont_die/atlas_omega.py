@@ -33,20 +33,21 @@ def _try_import(name):
 # ─── Module metadata ─────────────────────────────────────────────────────────
 
 _MODULE_META = {
-    "token_data":       "V7",
-    "economy":          "V7",
-    "vault":            "V7",
-    "detector":         "V8",
-    "atlas_graph_core": "V9",
-    "store":            "V7",
-    "history":          "V7",
-    "whale_tracker":    "V8",
-    "scenario":         "V7/V8",
-    "alert":            "V8",
-    "live_data":        "V8",
-    "validate":         "V9",
-    "github_sync":      "V9",
-    "run_all":          "V7/V8/V9",
+    "token_data":          "V7",
+    "economy":             "V7",
+    "vault":               "V7",
+    "detector":            "V8",
+    "atlas_graph_core":    "V9",
+    "store":               "V7",
+    "history":             "V7",
+    "whale_tracker":       "V8",
+    "scenario":            "V7/V8",
+    "alert":               "V8",
+    "live_data":           "V8",
+    "validate":            "V9",
+    "github_sync":         "V9",
+    "smart_integrations":  "V10",
+    "run_all":             "V7/V8/V9/V10",
 }
 
 
@@ -346,6 +347,14 @@ class OmegaEngine:
         if not recs:
             recs.append("✅ All systems nominal — PCVR economy is healthy")
 
+        # V10 Intelligence — sentiment-based recs
+        si = self.modules.get("smart_integrations")
+        if si:
+            try:
+                recs = si.enrich_recommendations(recs)
+            except Exception:
+                pass
+
         recs.append(
             "✅ Run scenario.py to test any parameter changes before deploying"
         )
@@ -527,6 +536,49 @@ class OmegaEngine:
         ]
         return "\n".join(lines)
 
+    def _intel_data(self):
+        """Return intelligence summary dict from smart_integrations, or {}."""
+        si = self.modules.get("smart_integrations")
+        if not si:
+            return {}
+        try:
+            sent = si.sentiment_report()
+            news = sent.get("pcvr_results", [])
+            headline = news[0].get("title", "") if news else ""
+            return {
+                "combined":  sent.get("combined", {}),
+                "pcvr":      sent.get("pcvr", {}),
+                "market":    sent.get("market", {}),
+                "headline":  headline,
+                "available": True,
+            }
+        except Exception:
+            return {}
+
+    def _section_intel(self):
+        """Formatted intelligence / sentiment section."""
+        intel = self._intel_data()
+        if not intel:
+            return "  ⚠️  Intelligence data unavailable (smart_integrations not loaded)"
+        combined = intel.get("combined", {})
+        pcvr_s   = intel.get("pcvr", {})
+        market_s = intel.get("market", {})
+        headline = intel.get("headline", "")
+        _label_emoji = {"BULLISH": "📈", "BEARISH": "📉", "NEUTRAL": "⚖️ "}
+        c_label  = combined.get("label", "N/A")
+        c_score  = combined.get("score",  0.0)
+        c_emoji  = _label_emoji.get(c_label, "⚖️ ")
+        lines = [
+            f"  PCVR Sentiment : {pcvr_s.get('label','N/A')} "
+            f"({pcvr_s.get('score', 0.0):+.2f})",
+            f"  Market         : {market_s.get('label','N/A')} "
+            f"({market_s.get('score', 0.0):+.2f})",
+            f"  Combined       : {c_emoji} {c_label} ({c_score:+.2f})",
+        ]
+        if headline:
+            lines.append(f"  Latest News    : {headline[:50]}")
+        return "\n".join(lines)
+
     def _section_health(self):
         vd  = self._validate_data()
         loaded  = sum(1 for v in self.status.values() if v)
@@ -617,6 +669,10 @@ class OmegaEngine:
         # Sync
         print("\n🔄 SYNC STATUS (V9 — github_sync)")
         print(self._section_sync())
+
+        # Intelligence (V10 — smart_integrations)
+        print("\n🧠 INTELLIGENCE (V10 — smart_integrations)")
+        print(self._section_intel())
 
         # Health
         print("\n🔍 SYSTEM HEALTH (V9 — validate)")
@@ -884,8 +940,9 @@ def _print_menu():
         ("10. watch",    "continuous monitoring"),
         ("11. modules",  "module status"),
         ("12. trends",   "history & trends"),
-        ("13. save",     "save report"),
-        ("14. exit",     ""),
+        ("13. intel",    "V10 intelligence report"),
+        ("14. save",     "save report"),
+        ("15. exit",     ""),
     ]
     print("║" + " Commands:".ljust(W) + "║")
     for cmd, desc in cmds:
@@ -915,7 +972,7 @@ def _run_cli(engine):
             "4": "economy","5": "risk",      "6": "whale",
             "7": "scenario","8": "graph",    "9": "recommend",
             "10":"watch",  "11":"modules",   "12":"trends",
-            "13":"save",   "14":"exit",
+            "13":"intel",  "14":"save",      "15":"exit",
         }
         cmd = aliases.get(raw, raw)
 
@@ -951,6 +1008,12 @@ def _run_cli(engine):
             engine.module_status()
         elif cmd == "trends":
             engine.trend_summary()
+        elif cmd == "intel":
+            si = engine.modules.get("smart_integrations")
+            if si:
+                si.intelligence_report()
+            else:
+                print("  ⚠️  smart_integrations module not loaded — run smart_integrations.py")
         elif cmd == "save":
             engine.save_report()
         elif cmd in ("exit", "quit", "q"):

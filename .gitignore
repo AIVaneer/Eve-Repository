@@ -17,3 +17,6 @@ project_dont_die/github_token.txt
 project_dont_die/pcvr_sync_log.json
 *.bak
 project_dont_die/omega_reports/
+# smart integrations — never commit API keys or runtime cache
+project_dont_die/integration_keys.json
+project_dont_die/intelligence_cache.json
