@@ -9,6 +9,7 @@ from atlas_graph_core import AtlasGraphCore
 import economy as e
 import store
 import history
+import whale_tracker
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -46,6 +47,20 @@ vault_report()
 check(e.emitted, e.spent, e.burned, e.locked, e.circ, e.supply, e.cap, e.today)
 
 print("© PCVR STUDIOS 2026")
+print(f"{'='*50}\n")
+
+# 5b. Whale concentration snapshot
+print("=" * 50)
+print("  🐋 PCVR WHALE TRACKER — Concentration Snapshot")
+print("=" * 50)
+_top3 = whale_tracker.top_holders(3)
+_circ, _ = whale_tracker.get_supply()
+_effective = max(_circ, sum(w["balance"] for w in whale_tracker.load_wallets())) or 1
+for _i, _w in enumerate(_top3, 1):
+    _pct = _w["balance"] / _effective * 100
+    print(f"  #{_i} {_w['wallet_id']:<22} {_w['balance']:>18,}  ({_pct:.2f}%)")
+_gini_val, _gini_label = whale_tracker.gini_coefficient()
+print(f"  Gini coefficient: {_gini_val}  {_gini_label}")
 print(f"{'='*50}\n")
 
 # 6. Atlas Graph Core — quick economy health check
