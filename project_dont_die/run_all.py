@@ -31,6 +31,11 @@ try:
     _GITHUB_SYNC_AVAILABLE = True
 except Exception:
     _GITHUB_SYNC_AVAILABLE = False
+try:
+    import atlas_omega as _atlas_omega
+    _ATLAS_OMEGA_AVAILABLE = True
+except Exception:
+    _ATLAS_OMEGA_AVAILABLE = False
 
 print("\n" + "=" * 50)
 print("  PCVR STUDIOS — PROJECT DON'T DIE")
@@ -209,3 +214,18 @@ if _GITHUB_SYNC_AVAILABLE:
 else:
     print("  ⚠️  github_sync.py not available")
 print(f"{'='*50}\n")
+
+_OMEGA_HINT = "  Run `atlas_omega.py` for the full unified command center"
+
+# 13. Atlas Omega — unified command center
+if _ATLAS_OMEGA_AVAILABLE:
+    print("=" * 50)
+    print("  🌐 ATLAS OMEGA — QUICK STATUS")
+    print("=" * 50)
+    _omega = _atlas_omega.OmegaEngine()
+    _omega.quick_status()
+    print()
+    print(_OMEGA_HINT)
+    print(f"{'='*50}\n")
+else:
+    print(_OMEGA_HINT + "\n")
