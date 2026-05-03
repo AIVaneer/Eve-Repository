@@ -264,3 +264,207 @@ Game Downloads (via Discord):
 
 
 © PCVR STUDIOS 2026 · Atlas Nexus Engine v1.0 · PCVR Coin on Cronos
+
+---
+
+# 🆕 Version 2.1 Additions — New Since 2.0
+
+**Version 2.1 · May 2026**
+
+> This section documents what PCVR Studios has built since White Paper 2.0 was published in March 2026. All previous sections remain intact and authoritative — this is an evolution, not a rewrite.
+
+---
+
+## 1. PCVR EdTech — Code Raiders (NEW PRODUCT LINE)
+
+PCVR Studios has expanded beyond pure VR gaming into **gamified education**. **Code Raiders** is a story-driven Python-learning game that teaches real coding through broken-code repair missions.
+
+- **Repository:** https://github.com/AIVaneer/PCVR-EdTech
+- **Live URL:** https://aivaneer.github.io/PCVR-EdTech/
+- **Hosting:** GitHub Pages (zero-cost, instant deploy)
+- **Tech:** Self-contained HTML/CSS/JS — no backend, no dependencies
+- **Status:** Levels 1–7 shipped, Portal V3 live
+
+### Campaign Structure
+Release model: **three levels per Monday batch**.
+
+| World | Theme | Levels | Status |
+|---|---|---|---|
+| 1 | Matrix Green World | 1, 2, 3 | ✅ Active |
+| 2 | Fire Cave World | 4, 5, 6 | 🔜 Planned/Building |
+| 3 | Ice Castle World | 7, 8, 9 | 🔜 Planned |
+| 4 | Space Portal World | 10, 11, 12 | 🔜 Planned |
+
+### Why This Matters
+- Free user acquisition funnel into the PCVR ecosystem
+- Onboards new players to the brand before they touch the token
+- Educational bridge — students learn Python while exposed to PCVR Coin concepts
+
+---
+
+## 2. Portal V3 — Console-Style Launcher
+
+The Code Raiders Portal Hub has evolved from a simple navigation page into a full **console interface + game launcher**.
+
+The Portal functions as the central operating system for the PCVR ecosystem, unifying learning, gameplay, and future token utility into a single user interface.
+
+### Core Sections
+- **Continue Journey** — Smart progression routing
+- **PCVR Radio** — Built-in streaming audio system
+- **PCVR Arcade** — Embedded game launcher
+- **Learning Worlds** — Code Raiders campaign access
+- **Boss + Cinematics** — Story moments
+- **Systems + Tools** — Player utilities
+- **Atlas Core** — Reserved gateway (private system, high-level reference only)
+
+### Smart Continue System
+Tracks player progression locally using browser storage:
+- XP tracking
+- Last-level memory
+- Per-level completion flags
+- Dynamic progress bar
+- Auto-routing to next mission, with fallback to last saved state
+
+---
+
+## 3. PCVR Arcade System
+
+Level 10+ experiences are full games — not coding lessons. They launch inside an embedded **iframe modal arcade**, never as page redirects.
+
+This design ensures all gameplay remains inside the PCVR environment, enabling future integration of rewards, progression systems, and token utility without external dependency.
+
+### Initial Arcade Lineup
+- SkyBurner (HTML port for browser play)
+- Levels 11–16 (boss battles, cinematic challenges)
+
+### Design Principles
+- iframe modal launcher with close button
+- Mobile-friendly
+- App-launcher feel
+- Games stay sandboxed inside the portal — players never leave the ecosystem
+
+---
+
+## 4. PCVR Radio System
+
+The portal now ships with a built-in **SomaFM streaming radio**, turning the learning experience into an ambient session.
+
+### Features
+- Play / Pause
+- Next station / Shuffle
+- Volume control with persistent state
+- Animated equalizer
+- Station memory across sessions
+
+This adds session length, immersion, and a "command-center" feel to every visit.
+
+---
+
+## 5. Studio Operations Repo — AIVaneer-PCVR-Studios
+
+A new central HQ repository consolidates studio assets:
+
+- **Repo:** https://github.com/AIVaneer/AIVaneer-PCVR-Studios
+- **Eve DeFi Toolkit v10** — 20+ Python modules for market data, risk analytics, whale tracking, automation, multichain support, and smart integrations
+- **Project Don't Die** — Token economy survival tools (treasury, burn schedules, staking pools)
+- **SkyBurner Ultimate** — Full source under `skyburner/` with the Atlas Nexus Engine
+- **Web Dashboard** — Self-contained HTML dashboard, GitHub Pages compatible
+- **CI/CD** — flake8 + pytest workflows on Python 3.10–3.12
+
+---
+
+## 6. Project Don't Die — Token Economy Survival Plan
+
+Published as a standalone document alongside the white paper:
+**https://github.com/AIVaneer/Eve-Repository/blob/main/PROJECT_DONT_DIE.md**
+
+Key additions to PCVR Coin economic policy since 2.0:
+
+### The Loop
+**Earn → Hold → Spend → Buy → Earn**
+
+### 3-Month Smart Contract Lock (Planned)
+- 90-day immutable lock
+- Holders earn share of the **Earnings Vault** (real revenue, not minted tokens)
+- 7-day gradual unlock to prevent cliff dumps
+- Re-lock option for compounded participation
+
+### Anti-Debasement Controls
+- Daily emission caps
+- Per-player reward limits + cooldowns
+- 10–35% burn on every store purchase
+- Earnings Vault funded only by real revenue
+- Health Ratio monitoring (spent / emitted)
+- Server-side validation + anomaly detection
+
+### Access Tiers (Planned)
+| Tier | Stake | Benefits |
+|---|---|---|
+| Bronze | 500 PCVR | Patch notes, Discord badge |
+| Silver | 2,000 PCVR | Beta access, dev Q&A |
+| Gold | 5,000 PCVR | Feature voting, game credits |
+| Diamond | 15,000 PCVR | Direct dev access, custom title |
+| Elite | 50,000 PCVR | Revenue share, co-design (100 slots) |
+
+---
+
+## 7. Internal Systems (Reference Only)
+
+PCVR Studios operates additional internal infrastructure that is **intentionally not detailed in this public document**:
+
+- **Atlas Infinity Core** — Private orchestration layer
+- **PCVR Loader** — Internal Tiered loader/automation system
+- **Backend automation pipelines** — Reserved for studio operations
+
+These systems support studio velocity but are kept private for security, IP, and competitive reasons. They are referenced here for completeness only; implementation details are not published.
+
+---
+
+## 8. Updated Roadmap Snapshot
+
+| Milestone | Status |
+|---|---|
+| Concept Development | ✅ 100% |
+| Token Launch (PCVR Coin live on Cronos) | ✅ 100% |
+| SkyBurner Ultimate (iOS) | ✅ Shipped |
+| Warp Protocol (iOS) | ✅ Shipped |
+| PCVR Game Shell (Quest 3) | ✅ Open-sourced |
+| Atlas Nexus Engine v1.0 | ✅ Released |
+| **PCVR EdTech / Code Raiders** | ✅ **Live (NEW)** |
+| **Portal V3 Console System** | ✅ **Live (NEW)** |
+| **Studio HQ repo** | ✅ **Live (NEW)** |
+| **Project Don't Die framework** | ✅ **Documented (NEW)** |
+| Community & Ecosystem | 🔄 Ongoing (~80%) |
+| Full Mobile Multiplayer | 🔄 In Progress |
+| Token Utility Phase | 🔜 Planned |
+| Beta Launch | 🔜 Planned |
+| Public Release | 🔜 Planned |
+
+**Overall:** Studio has graduated from "concept + 2 games" to "live ecosystem with education arm, console portal, and token economy framework."
+
+---
+
+## 9. New Resources & Links
+
+| Resource | URL |
+|---|---|
+| Studio HQ Repo | https://github.com/AIVaneer/AIVaneer-PCVR-Studios |
+| Code Raiders (Live) | https://aivaneer.github.io/PCVR-EdTech/ |
+| Code Raiders Repo | https://github.com/AIVaneer/PCVR-EdTech |
+| Portal Hub (Live) | https://aivaneer.github.io/PCVR-EdTech/code-raiders/portal.html |
+| Project Don't Die | https://github.com/AIVaneer/Eve-Repository/blob/main/PROJECT_DONT_DIE.md |
+
+---
+
+## 10. Closing Note for 2.1
+
+PCVR Studios in March 2026 was a token + games studio. PCVR Studios in May 2026 is a **token + games + education + console-grade portal experience**. The mission has not changed — *"Always for good, never for bad"* — but the surface area has expanded dramatically.
+
+This transition marks the beginning of PCVR as a platform, not just a product.
+
+The next white paper milestone (3.0) will be reserved for major architectural shifts (full app shell, automated rewards, in-app token utility). Until then, 2.1 is the source of truth for everything new.
+
+---
+
+*White Paper 2.1 appended: 2026-05-03*
+*Original 2.0 content above remains unchanged and authoritative.*
